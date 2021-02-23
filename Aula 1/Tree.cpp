@@ -42,17 +42,19 @@ int Tree::dfs(Node* target, Node* current_node, int depth_limit, int current_dep
         return -1;
     }
 
-    if ((*current_node) == (*target)) return cost;
+    if ((*current_node) == (*target))
+    {
+        return cost;
+    } 
 
     current_node->visited = true;
-    int current_cost, previous_cost;
+    int current_cost;
     for (auto childNode : current_node->getChildren())
     {
         if (!childNode->visited)
         {
-            previous_cost = cost;
             current_cost = dfs(target, childNode, depth_limit, current_depth + 1, ++cost);
-            if (current_cost < 0) cost = previous_cost;
+            if (current_cost >= 0) return cost;
         }
     }
 
@@ -66,6 +68,9 @@ int Tree::iterativeDeepening(Node* target, int depth_limit)
     {
         cost += dfs(target, root, i, 0, current_cost);
     }
+
+    if (cost < 0) cost = -1;
+
     return cost;
 }
 
