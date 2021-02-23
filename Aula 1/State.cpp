@@ -51,3 +51,8 @@ std::vector<State*> State::getChildrenStates()
 
     return result;
 }
+
+bool State::operator==(State right)
+{
+    return this->c1 == right.c1 && this->c2 == right.c2 && this->max_c1 == right.max_c1 && this->max_c2 == right.max_c2;
+}

@@ -7,7 +7,8 @@ class Node
     State* state;
     std::vector<Node*> children;
 
-    public: 
+    public:
+    bool visited;
     Node(State* state);
     State* getState();
     std::vector<Node*> getChildren();

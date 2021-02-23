@@ -2,6 +2,7 @@
 
 Node::Node(State* state)
 {
+    visited = false;
     this->state = state;
 
     std::vector<State*> stateChildren = state->getChildrenStates();
@@ -23,6 +24,6 @@ std::vector<Node*> Node::getChildren()
 
 bool Node::operator==(Node right)
 {
-    return this->state == right.state;
+    return (*this->state) == (*right.state);
 }
 
