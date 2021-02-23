@@ -4,12 +4,6 @@ Node::Node(State* state)
 {
     visited = false;
     this->state = state;
-
-    std::vector<State*> stateChildren = state->getChildrenStates();
-    for (auto i : stateChildren)
-    {
-        children.push_back(new Node(i));
-    }
 }
 
 State* Node::getState()
@@ -19,6 +13,11 @@ State* Node::getState()
 
 std::vector<Node*> Node::getChildren()
 {
+    std::vector<State*> stateChildren = state->getChildrenStates();
+    for (auto i : stateChildren)
+    {
+        children.push_back(new Node(i));
+    }
     return children;
 }
 

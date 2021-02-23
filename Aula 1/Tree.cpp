@@ -1,5 +1,10 @@
 #include "Tree.h"
 
+Tree::Tree(Node* root)
+{
+    this->root = root;
+}
+
 int Tree::bfs(Node* target)
 {
     int cost = 0;
@@ -37,34 +42,35 @@ int Tree::dfs(Node* target, Node* current_node, int depth_limit, int current_dep
         return -1;
     }
 
-    if ((*current_node) == (*target)) return;
+    if ((*current_node) == (*target)) return cost;
 
     current_node->visited = true;
-    int current_cost;
+    int current_cost, previous_cost;
     for (auto childNode : current_node->getChildren())
     {
         if (!childNode->visited)
         {
+            previous_cost = cost;
             current_cost = dfs(target, childNode, depth_limit, current_depth + 1, ++cost);
-            if (current_cost < 0) cost--;
+            if (current_cost < 0) cost = previous_cost;
         }
     }
 
     return -1;
 }
 
-std::vector<Node*> Tree::iterativeDeepening(Node* target, int depth_limit)
+int Tree::iterativeDeepening(Node* target, int depth_limit)
 {
-
+    int cost = 0, current_cost = 0;
+    for (int i = 0; i <= depth_limit; i++)
+    {
+        cost += dfs(target, root, i, 0, current_cost);
+    }
+    return cost;
 }
 
-std::vector<Node*> dfsAux(Node* target, int depth_limit, int current_depth)
+
+Node* Tree::getRoot()
 {
-
+    return root;
 }
-
-std::vector<Node*> iterativeDeepeningAux(Node* target, int depth_limit, int current_depth)
-{
-
-}
-
