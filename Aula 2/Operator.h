@@ -14,12 +14,10 @@ class Operator
 class NPuzzleOperator: public virtual Operator
 {
     private:
-        State* state;
+        NPuzzleState* state;
         std::string direction;
     public:
-        NPuzzleOperator(State* state, std::string direction);
+        NPuzzleOperator(NPuzzleState* state, std::string direction);
         virtual bool checkPreconditions();
-        virtual State* applyOperator();
-
-
+        virtual NPuzzleState* applyOperator();
 };
