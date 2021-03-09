@@ -43,10 +43,42 @@ int Game::searchRows(int player, int count, bool consecutive)
 
 int Game::searchCols(int player, int count, bool consecutive)
 {
+    int total = 0, colCount = 0;
 
+    if (!consecutive)
+    {
+        for (size_t i = 0; i < 7; i++)
+        {
+            for (size_t j = 0; j < 6; j++)
+            {
+                if (matrix[j][i] == player) colCount++;
+            }
+            if (colCount == count) total++;
+            colCount = 0;
+        }  
+    }
+    else
+    {
+        for (size_t i = 0; i < 7; i++)
+        {
+            for (size_t j = 0; j < 6; j++)
+            {
+                if (matrix[j][i] == player) colCount++;
+                else colCount = 0;
+                if (colCount >= count) total++;
+            }
+            colCount = 0;
+        }
+    }
+    
+    return total;
+    
 }
 
 int Game::searchDiag(int player, int count, bool consecutive)
 {
+    int total = 0;
+    
 
+    return total;
 }
