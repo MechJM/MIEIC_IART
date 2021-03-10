@@ -4,81 +4,114 @@ Game::Game() {}
 
 int Game::nlines4(int player)
 {
-    return searchCols(player, 4, false) + searchDiag(player, 4, false) + searchRows(player, 4, false);
+    auto lines = getAllLines();
+    int result = 0;
+
+    int lineCount = 0;
+    for (auto line : lines)
+    {
+        for (int elem : line)
+        {
+            if (elem == player) lineCount++;
+        }
+        if (lineCount == 4) result++; 
+        lineCount = 0;
+    }
+    return result;
 }
 
-int Game::searchRows(int player, int count, bool consecutive)
+vector<vector<int>> Game::getAllLines()
 {
-    int rowCount = 0, total = 0;
+    vector<vector<int>> lines;
 
-    if (!consecutive)
+    for (auto line : getRows()) lines.push_back(line);
+    for (auto line : getCols()) lines.push_back(line);
+    for (auto line : getDiags()) lines.push_back(line);
+
+    return lines;
+}
+
+vector<vector<int>> Game::getRows()
+{
+    vector<vector<int>> rows;
+
+    for (size_t i = 0; i < 6; i++)
     {
-        for (size_t i = 0; i < 6; i++)
+        vector<int> currentRow;
+        for (size_t j = 0; j < 7; j++)
         {
-            for (size_t j = 0; j < 7; j++)
-            {
-                if (matrix[i][j] == player) rowCount++;            
-            }
-            if (rowCount == count) total++; 
-            rowCount = 0;
+            currentRow.push_back(matrix[i][j]);
+        }
+        rows.push_back(currentRow);
+    }
+    
+
+    return rows;
+}
+
+vector<vector<int>> Game::getCols()
+{
+    vector<vector<int>> cols;
+
+    for (size_t i = 0; i < 7; i++)
+    {
+        vector<int> currentCol;
+        for (size_t j = 0; j < 6; j++)
+        {
+            currentCol.push_back(matrix[j][i]);
+        }
+        cols.push_back(currentCol);
+    }
+    
+
+    return cols;
+}
+
+vector<vector<int>> Game::getDiags()
+{
+    vector<vector<int>> diags;
+
+    int i = 5, j = 0;
+
+    while (i >= 0) diags.push_back(getOneDiag(i--, j, true));
+
+    int i = 0, j = 0;
+    
+    while (j < 7) diags.push_back(getOneDiag(i, ++j, true));
+
+    int i = 5, j = 6;
+
+    while (i >= 0) diags.push_back(getOneDiag(i--, j, false));
+
+    int i = 0, j = 6;
+
+    while (j >= 0) diags.push_back(getOneDiag(i, --j, false));
+
+    return diags;
+}
+
+vector<int> Game::getOneDiag(int i, int j, bool LTR)
+{
+    vector<int> diag;
+
+    if (LTR)
+    {
+        while (i < 6 && j < 7)
+        {
+            diag.push_back(matrix[i][j]);
+            i++;
+            j++;
         }
     }
     else
     {
-        for (size_t i = 0; i < 6; i++)
+        while (i < 6 && j >= 0)
         {
-            for (size_t j = 0; j < 7; j++)
-            {
-                if (matrix[i][j] == player) rowCount++;
-                else rowCount = 0;
-                if (rowCount >= count) total++;
-            }
-            rowCount = 0;
-        }
-        
-    }
-    
-    return total;
-}
-
-int Game::searchCols(int player, int count, bool consecutive)
-{
-    int total = 0, colCount = 0;
-
-    if (!consecutive)
-    {
-        for (size_t i = 0; i < 7; i++)
-        {
-            for (size_t j = 0; j < 6; j++)
-            {
-                if (matrix[j][i] == player) colCount++;
-            }
-            if (colCount == count) total++;
-            colCount = 0;
-        }  
-    }
-    else
-    {
-        for (size_t i = 0; i < 7; i++)
-        {
-            for (size_t j = 0; j < 6; j++)
-            {
-                if (matrix[j][i] == player) colCount++;
-                else colCount = 0;
-                if (colCount >= count) total++;
-            }
-            colCount = 0;
+            diag.push_back(matrix[i][j]);
+            i++;
+            j--;
         }
     }
-    
-    return total;
-    
-}
 
-int Game::searchDiag(int player, int count, bool consecutive)
-{
-    int total = 0;
-    
-
-    return total;
+    return diag;
 }
