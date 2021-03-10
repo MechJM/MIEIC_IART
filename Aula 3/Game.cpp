@@ -1,6 +1,79 @@
 #include "Game.h"
 
-Game::Game() {}
+Game::Game() 
+{
+    for (size_t i = 0; i < 6; i++)
+    {
+        for (size_t j = 0; j < 7; j++)
+        {
+            matrix[i][j] = 0;
+        }   
+    }
+}
+
+Game::Game(int matrix[6][7])
+{
+    for (size_t i = 0; i < 6; i++)
+    {
+        for (size_t j = 0; j < 7; j++)
+        {
+            this->matrix[i][j] = matrix[i][j];
+        }
+    }
+}
+
+int Game::central(int player)
+{
+    int total = 0;
+
+    for (size_t i = 0; i < 6; i++)
+    {
+        if (matrix[i][3] == player) total++;
+        if (matrix[i][4] == player) total += 2;
+        if (matrix[i][5] == player) total++;
+    }
+    
+    return total;
+}
+
+int Game::nlines3(int player)
+{
+    auto lines = getAllLines();
+
+    int result = 0;
+    int lineCount = 0;
+    bool foundEmptySpot = false;
+    int startingIndex = -1;
+
+    for (auto line : lines)
+    {
+        if (line.size() < 4) continue;
+        for (size_t i = 0; i < line.size(); i++)
+        {
+            if (line[i] == player)
+            {
+                if (startingIndex == -1 && lineCount == 0) startingIndex = i;
+                lineCount++;
+            }
+            else
+            {
+                startingIndex = -1;
+                lineCount = 0;
+            }
+
+            if (lineCount == 3)
+            {
+                if ((startingIndex > 0 && line[startingIndex - 1] == 0) || (i < (line.size() - 1) && line[i + 1] == 0))
+                {
+                    result++;
+                }
+            }
+        }
+        startingIndex = -1;
+        lineCount = 0;
+    }
+    return result;
+}
 
 int Game::nlines4(int player)
 {
@@ -45,7 +118,6 @@ vector<vector<int>> Game::getRows()
         rows.push_back(currentRow);
     }
     
-
     return rows;
 }
 
@@ -63,7 +135,6 @@ vector<vector<int>> Game::getCols()
         cols.push_back(currentCol);
     }
     
-
     return cols;
 }
 
@@ -75,15 +146,15 @@ vector<vector<int>> Game::getDiags()
 
     while (i >= 0) diags.push_back(getOneDiag(i--, j, true));
 
-    int i = 0, j = 0;
+    i = 0, j = 0;
     
     while (j < 7) diags.push_back(getOneDiag(i, ++j, true));
 
-    int i = 5, j = 6;
+    i = 5, j = 6;
 
     while (i >= 0) diags.push_back(getOneDiag(i--, j, false));
 
-    int i = 0, j = 6;
+    i = 0, j = 6;
 
     while (j >= 0) diags.push_back(getOneDiag(i, --j, false));
 
@@ -114,4 +185,37 @@ vector<int> Game::getOneDiag(int i, int j, bool LTR)
     }
 
     return diag;
+}
+
+Game* Game::applyOperator(int col, int player)
+{
+    
+    int newMatrix[6][7];
+    for (size_t i = 0; i < 6; i++)
+    {
+        for (size_t j = 0; j < 7; j++)
+        {
+            newMatrix[i][j] = matrix[i][j];
+        }
+    }
+    for (size_t i = 5; i >= 0; i--)
+    {
+        if (matrix[i][col] == 0)
+        {
+            newMatrix[i][col] = player; 
+            break;
+        } 
+    }
+    return new Game(newMatrix);
+
+}
+
+vector<Game*> Game::getChildren(int player)
+{
+    vector<Game*> children;
+    for (size_t i = 0; i < 7; i++)
+    {
+        if (matrix[0][i] == 0) children.push_back(applyOperator(i, player));
+    }
+    return children;
 }
